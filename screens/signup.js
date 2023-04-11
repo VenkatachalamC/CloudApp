@@ -12,12 +12,12 @@ function SignUp({navigation}){
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerStyle:{
-                backgroundColor:"#333333",
+                backgroundColor:"black",
             },
             contentStyle:{
-                backgroundColor:"#333333"
+                backgroundColor:"black"
             },
-            headerTintColor:"#ccccff",
+            headerTintColor:"white",
             headerTitleAlign: 'center'
         })}
         )
@@ -57,14 +57,14 @@ function SignUp({navigation}){
         {match && <Text style={{color:"red",margin:15}}>Password do not match..</Text>}
         {errormsg && <Text style={styles.error}>{errormsg}</Text>}
         <TextInput
-        placeholderTextColor="#ccccff" 
+        placeholderTextColor="white" 
         placeholder="Username"
         style={styles.input}
         value={userName}
         onChangeText={(val)=>setuserName(val)}
         />
         <TextInput
-        placeholderTextColor="#ccccff" 
+        placeholderTextColor="white" 
         placeholder="Password"
         style={styles.input}
         secureTextEntry={true}
@@ -72,7 +72,7 @@ function SignUp({navigation}){
         onChangeText={(val)=>setpassword(val)}
         />
         <TextInput
-        placeholderTextColor="#ccccff" 
+        placeholderTextColor="white" 
         placeholder="Confirm password"
         style={styles.input}
         secureTextEntry={true}
@@ -94,8 +94,8 @@ const styles=StyleSheet.create({
         height:50,
         padding:10,
         borderRadius:20,
-        borderColor:"#ccccff",
-        color:"#ccccff"
+        borderColor:"white",
+        color:"white"
     },
     button:{
         backgroundColor:"blue",

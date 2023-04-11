@@ -6,17 +6,15 @@ function Upload({navigation,route}){
     useLayoutEffect(()=>{
     navigation.setOptions({
         headerStyle:{
-            backgroundColor:"#333333",
+            backgroundColor:"black",
         },
         contentStyle:{
-            backgroundColor:"#333333"
+            backgroundColor:"black"
         },
-        headerTintColor:"#ccccff",
+        headerTintColor:"white",
         headerTitleAlign: 'center'
     })}
     )
-
-
 
     const[doc,setdoc]=useState(null)
     
@@ -38,7 +36,7 @@ function Upload({navigation,route}){
             headers:{
                 "content-Type":"multipart/form-data"
             }
-        }).then(alert("File uploaded successfully")).catch(err=>alert("file not uploaded try again"))
+        }).then(alert("File uploaded successfully ☺️")).catch(err=>alert("File not uploaded! 😔\n Try again"))
         setdoc(null)
     }
 
@@ -65,7 +63,7 @@ const styles=StyleSheet.create({
     },
     button:{
         margin:10,
-        backgroundColor:"#a3a3c2",
+        backgroundColor:"blue",
         width:150,
         height:30,
         alignItems:'center',
@@ -77,7 +75,7 @@ const styles=StyleSheet.create({
         width:50
     },
     text:{
-        color:"black",
+        color:"white",
         fontWeight:"400"
     }
 })

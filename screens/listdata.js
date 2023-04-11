@@ -1,143 +1,158 @@
 
-import {useLayoutEffect, useState } from 'react';
-import {Text,View,StyleSheet, Platform, FlatList, TouchableOpacity,Image} from 'react-native';
+import { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, Platform, FlatList, TouchableOpacity, Image, Pressable } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-function ListData({navigation,route}){
-    const [files,setfiles]=useState([])
-    const [userid,setuserid]=useState("")
-    useLayoutEffect(()=>{
+function ListData({ navigation, route }) {
+    const [files, setfiles] = useState([])
+    const [userid, setuserid] = useState("")
+    useEffect(() => {
         setuserid(route.params.userid)
         navigation.setOptions({
-            headerRight:()=>{
+            headerRight: () => {
                 return (
-                    <TouchableOpacity onPress={()=>navigation.navigate('sign-in')}>
-                        <Text style={{color:"#ccccff"}}>Logout</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('sign-in')}>
+                        <Text style={{ color: "white" }}>Logout</Text>
                     </TouchableOpacity>
-                    )
+                )
             },
-            headerLeft:()=>{
-                return(
-                    <View>     
+            headerLeft: () => {
+                return (
+                    <View>
                     </View>
-                    )
+                )
             },
             headerTitleAlign: 'center',
-            title:"Documents",
-            headerStyle:{
-                backgroundColor:"#333333",
+            title: "Documents",
+            headerStyle: {
+                backgroundColor: "black",
             },
-            contentStyle:{
-                backgroundColor:"#333333"
+            contentStyle: {
+                backgroundColor: "black"
             },
-            headerTintColor:"#ccccff",
-         })
-    //fetch the uploaded image from the server..for the user name..
-    fetch(`http://192.168.1.7:5000/documents/${userid}`)
-    .then(res=>res.json())
-    .then(data=>setfiles(data))
-
-    },[navigation,files])
-    function download(documentName){
-        const {fs,config}=RNFetchBlob;
-        const path=fs.dirs.DownloadDir;
+            headerTintColor: "white",
+        })
+        fetch(`http://192.168.1.7:5000/documents/${userid}`)
+            .then(res => res.json())
+            .then(data => setfiles(data))
+    }, [files, navigation])
+    function download(documentName) {
+        const { fs, config } = RNFetchBlob;
+        const path = fs.dirs.DownloadDir;
         config({
-            fileCache:true,
-            addAndroidDownloads:{
-                useDownloadManager:true,
-                notification:true,
-                path:path+"/"+documentName,
-                description:'file download',
+            fileCache: true,
+            addAndroidDownloads: {
+                useDownloadManager: true,
+                notification: true,
+                path: path + "/" + documentName,
+                description: 'file download',
             }
-        }).fetch('GET',`http://192.168.1.7:5000/${documentName}`,{
-            Authorization : 'Bearer access-token...'
-        }).then(res=>alert("download successful"))
+        }).fetch('GET', `http://192.168.1.7:5000/${documentName}`, {
+            Authorization: 'Bearer access-token...'
+        }).then(res => alert("Download successful"))
     }
-    function renderList(ItemData){
+    function renderList(ItemData) {
         let fname;
+        const url = `http://192.168.1.7:5000/${ItemData.item.fileName}`
         const myArray = ItemData.item.filetype.split("/");
-        switch(myArray[0]){
-            case "image":fname=<Image source={require("../assets/image.png")} style={styles.img}/>;break;
-            case "video":fname=<Image source={require("../assets/video.png")} style={styles.img}/>;break;
-            case "application":fname=<Image source={require("../assets/file.png")} style={styles.img}/>;break;
+        switch (myArray[0]) {
+            case "image": fname = <Image source={{ uri: url }} style={styles.img} />; break;
+            case "video": fname = <Image source={require("../assets/video.png")} style={styles.img} />; break;
+            case "application": fname = <Image source={require("../assets/file.png")} style={styles.img} />; break;
         }
-        function DeleteHandle(name){
-            fetch("http://192.168.1.7:5000/Delete",{
-                method:"DELETE",
-                body:JSON.stringify({
-                    name:name,
-                    uid:userid
+        function openfile() {
+            navigation.navigate('viewscreen', { url: url, filename: ItemData.item.fileName, type: myArray[0],userid:userid })
+        }
+        function DeleteHandle(name) {
+            fetch("http://192.168.1.7:5000/Delete", {
+                method: "DELETE",
+                body: JSON.stringify({
+                    name: name,
+                    uid: userid
                 }),
-                headers:{
-                    "Content-Type":"application/json"
+                headers: {
+                    "Content-Type": "application/json"
                 }
-            }).then(res=>res.json())
-                .then(data=>{})
+            }).then(res => res.json())
+                .then(data => { })
+            const f = files.filter((item) => { item.name != name })
+            setfiles(f);
         }
-        return(
+        return (
             <View style={styles.list}>
-                <TouchableOpacity onPress={()=>download(ItemData.item.fileName)} style={styles.list}>
+                <Pressable onPress={openfile} style={styles.buttoncontainer}>
                     {fname}
+                </Pressable>
                 <Text style={styles.txt}>{ItemData.item.fileName}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deletebutton} onPress={()=>DeleteHandle(ItemData.item.fileName)}>
-                <Text>Delete</Text>
-            </TouchableOpacity>
+                <Pressable onPress={() => download(ItemData.item.fileName)}>
+                    <Image source={require('../assets/download.png')} style={{ height: 20, width: 20, margin: 20 }} />
+                </Pressable>
+                <Pressable onPress={() => DeleteHandle(ItemData.item.fileName)}>
+                    <Image source={require('../assets/delete.png')} style={{ height: 20, width: 20, margin: 20 }} />
+                </Pressable>
             </View>
         )
     }
-    return(
-        <View style={{flex:1}}>
-        <FlatList data={files} renderItem={renderList}/>
-        <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('upload',{userid:userid})}>
-            <Text style={{color:"black"}}>upload</Text>
-        </TouchableOpacity>
+    return (
+        <View style={{ flex: 1 }}>
+            <FlatList data={files} renderItem={renderList} />
+            <View style={styles.buttoncontainer}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('upload', { userid: userid })}>
+                    <Image style={styles.icon} source={require("../assets/add-button.png")} />
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
 
 export default ListData;
 
-const styles=StyleSheet.create({
-    navbar:{
-        flex:0.09,
-        backgroundColor:"black",
-        marginTop:Platform.OS==="android"?30:0,
-        alignItems:"center",
-        justifyContent:"center"
+const styles = StyleSheet.create({
+    navbar: {
+        flex: 0.09,
+        backgroundColor: "black",
+        marginTop: Platform.OS === "android" ? 30 : 0,
+        alignItems: "center",
+        justifyContent: "center"
     },
-    button:{
-        height:50,
-        backgroundColor:"#aa80ff",
-        alignItems:'center',
-        justifyContent:'center'
+    button: {
+        height: 50,
+        width: 100,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 30,
+        marginBottom: 50
     },
-    list:{
-        margin:10,
-        alignItems:"center",
-        justifyContent:"center"
+    list: {
+        margin: 10,
+        alignItems: "center",
+        justifyContent: "center"
     },
-    img:{
-        height:100,
-        width:100
+    img: {
+        flex: 0.5,
+        height: 75,
+        width: 75,
+        borderRadius: 10,
+        marginLeft: 10,
+        marginRight: 10,
     },
-    list:{
-        flexDirection:"row",
-        margin:5,
+    list: {
+        flexDirection: "row",
+        margin: 5,
     },
-    txt:{
-        marginLeft:3,
-        marginTop:25,
-        width:200,
-        color:"#ccccff"
+    txt: {
+        flex: 1,
+        marginLeft: 3,
+        marginTop: 10,
+        width: 200,
+        color: "white"
     },
-    deletebutton:{
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:"red",
-        height:40,
-        marginTop:25,
-        borderRadius:10,
-        width:50,
-        marginRight:15
+    buttoncontainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "flex-end"
+    },
+    icon: {
+        height: 75,
+        width: 75,
     }
 })

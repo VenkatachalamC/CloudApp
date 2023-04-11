@@ -3,26 +3,28 @@ import { View ,TextInput, TouchableOpacity,Text,Image} from "react-native";
 import { StyleSheet } from "react-native";
 import { Platform,StatusBar } from "react-native";
 import { sha256 } from "react-native-sha256";
+import { PermissionsAndroid } from 'react-native';
 export default LoginScreen=({navigation})=>{
     const [name,setname]=useState("")
     const [pass,setpass]=useState("")
     const [errormsg,seterrormsg]=useState("")
-
-
+    const permission =()=>{
+        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE)    
+       }  
     useLayoutEffect(()=>{
         navigation.setOptions({
             headerStyle:{
-                backgroundColor:"#333333",
+                backgroundColor:"black",
             },
             contentStyle:{
-                backgroundColor:"#333333"
+                backgroundColor:"black"
             },
-            headerTintColor:"#ccccff",
+            headerTintColor:"white",
             headerTitleAlign: 'center'
         })
-    })
+        permission();
+    },[])
     function signIn(){
-        //post request to the server to confirm username and password
         sha256(pass).then(hash=>{
         fetch("http://192.168.1.7:5000/SignIn",{
             method:"POST",
@@ -41,36 +43,42 @@ export default LoginScreen=({navigation})=>{
             else{
                 seterrormsg(data.status)
             }
-        })})
+        })}).catch((e)=>{
+            console.log("here")
+            alert("Unable to connect to Server.")
+        })
         
     }
 
     return(
         <View style={styles.container}>
+            <Text style={styles.topic}>Implementation of Storage as a Service</Text>
+            <Text style={styles.topic}>Using Cloud NAS</Text>
+            <View style={styles.divider}></View>
         <Image source={require('../assets/cloud.png')} style={styles.img}/>
         {errormsg!="" && <Text style={{color:"red"}}>{errormsg}</Text>}
         <TextInput
         style={styles.input}
         placeholder="Name"
         keyboardType="default"
-        placeholderTextColor="#ccccff" 
+        placeholderTextColor="white" 
         value={name}
         onChangeText={(val)=>setname(val)}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
-        placeholderTextColor="#ccccff" 
+        placeholderTextColor="white" 
         keyboardType="default"
         secureTextEntry={true}
         value={pass}
         onChangeText={(val)=>setpass(val)}
       />
       <TouchableOpacity style={styles.button} onPress={signIn}>
-        <Text style={{color:"white"}}>sign In</Text>
+        <Text style={{color:"white"}}>Sign In</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={()=>navigation.navigate('sign-up')}>
-        <Text style={{color:"#ccccff"}}>New user?</Text>
+        <Text style={{color:"white"}}>New user?</Text>
       </TouchableOpacity>
         </View>
     )
@@ -84,8 +92,8 @@ const styles=StyleSheet.create({
         height:50,
         padding:10,
         borderRadius:20,
-        borderColor:"#ccccff",
-        color:"#ccccff"
+        borderColor:"white",
+        color:"white"
     },
     button:{
         backgroundColor:"blue",
@@ -105,5 +113,16 @@ const styles=StyleSheet.create({
         padding:Platform.OS=="android"?StatusBar.currentHeight:0,
         alignItems:"center",
         justifyContent:"center"
+    },
+    topic:{
+        alignItems:"center",
+        justifyContent:"center",
+        fontSize:16,
+        marginBottom:2,
+        fontWeight:"bold",
+        color:"white"
+    },
+    divider:{
+        margin:20
     }
 })

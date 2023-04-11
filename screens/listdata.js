@@ -60,7 +60,7 @@ function ListData({ navigation, route }) {
             case "application": fname = <Image source={require("../assets/file.png")} style={styles.img} />; break;
         }
         function openfile() {
-            navigation.navigate('viewscreen', { url: url, filename: ItemData.item.fileName, type: myArray[0],userid:userid })
+            navigation.navigate('viewscreen', { url: url, filename: ItemData.item.fileName, type: myArray[0], userid: userid })
         }
         function DeleteHandle(name) {
             fetch("http://192.168.1.7:5000/Delete", {

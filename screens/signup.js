@@ -30,7 +30,7 @@ function SignUp({ navigation }) {
         }
         else {
             sha256(password).then(hash => {
-                fetch("http://192.168.1.7:5000/signup", {
+                fetch("https://cloudserver-2iuc.onrender.com/signup", {
                     method: "POST",
                     headers: {
                         "content-Type": "application/json"

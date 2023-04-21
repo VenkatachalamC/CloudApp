@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Platform, FlatList, TouchableOpacity, Image, Pressable } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -31,7 +30,7 @@ function ListData({ navigation, route }) {
             },
             headerTintColor: "white",
         })
-        fetch(`http://192.168.1.7:5000/documents/${userid}`)
+        fetch(`https://cloudserver-2iuc.onrender.com/documents/${userid}`)
             .then(res => res.json())
             .then(data => setfiles(data))
     }, [files, navigation])
@@ -46,13 +45,13 @@ function ListData({ navigation, route }) {
                 path: path + "/" + documentName,
                 description: 'file download',
             }
-        }).fetch('GET', `http://192.168.1.7:5000/${documentName}`, {
+        }).fetch('GET', `https://cloudserver-2iuc.onrender.com/${documentName}`, {
             Authorization: 'Bearer access-token...'
         }).then(res => alert("Download successful"))
     }
     function renderList(ItemData) {
         let fname;
-        const url = `http://192.168.1.7:5000/${ItemData.item.fileName}`
+        const url = `https://cloudserver-2iuc.onrender.com/${ItemData.item.fileName}`
         const myArray = ItemData.item.filetype.split("/");
         switch (myArray[0]) {
             case "image": fname = <Image source={{ uri: url }} style={styles.img} />; break;
@@ -63,7 +62,7 @@ function ListData({ navigation, route }) {
             navigation.navigate('viewscreen', { url: url, filename: ItemData.item.fileName, type: myArray[0], userid: userid })
         }
         function DeleteHandle(name) {
-            fetch("http://192.168.1.7:5000/Delete", {
+            fetch("https://cloudserver-2iuc.onrender.com/Delete", {
                 method: "DELETE",
                 body: JSON.stringify({
                     name: name,

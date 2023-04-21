@@ -31,7 +31,7 @@ function Upload({ navigation, route }) {
             type: doc[0].type
         })
         fd.append("userid", route.params.userid)
-        fetch("http://192.168.1.7:5000/upload", {
+        fetch("https://cloudserver-2iuc.onrender.com/upload", {
             method: "POST",
             body: fd,
             headers: {

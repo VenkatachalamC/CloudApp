@@ -35,7 +35,7 @@ const ViewFile = ({ navigation, route }) => {
                 path: path + "/" + filename,
                 description: 'file download',
             }
-        }).fetch('GET', `http://192.168.1.7:5000/${filename}`, {
+        }).fetch('GET', `https://cloudserver-2iuc.onrender.com/${filename}`, {
             Authorization: 'Bearer access-token...'
         }).then(res => alert("Download successful"))
     }
@@ -46,7 +46,7 @@ const ViewFile = ({ navigation, route }) => {
         case "application": item = <Image source={require("../assets/file.png")} style={styles.img} />; break;
     }
     function HandleRename() {
-        fetch('http://192.168.1.7:5000/rename', {
+        fetch('https://cloudserver-2iuc.onrender.com/rename', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -86,9 +86,14 @@ const ViewFile = ({ navigation, route }) => {
                 <View style={styles.modalcontainer}>
                     <View style={styles.modal}>
                         <TextInput value={rename} onChangeText={(val) => setrename(val)} style={styles.modaltextinput} />
-                        <TouchableOpacity onPress={HandleRename}>
-                            <Text>Rename</Text>
-                        </TouchableOpacity>
+                        <View style={styles.modalbuttons}>
+                            <TouchableOpacity onPress={HandleRename} style={styles.modalbutton}>
+                                <Text>Rename</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setmodal(false)} style={styles.modalbutton}>
+                                <Text>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -98,7 +103,7 @@ const ViewFile = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     img: {
-        height: 300,
+        height: 400,
         width: 350,
         justifyContent: "center"
     },
@@ -142,6 +147,17 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue',
         borderRadius: 10,
         padding: 10,
+    },
+    modalbuttons: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    modalbutton: {
+        marginTop: 3,
+        marginLeft: 20,
+        marginRight: 20,
+
     }
 })
 export default ViewFile;

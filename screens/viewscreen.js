@@ -76,10 +76,10 @@ const ViewFile = ({ navigation, route }) => {
             {type === "application" && <Text style={styles.txt}>Files can only be downloaded</Text>}
             <View style={styles.buttons}>
                 <TouchableOpacity onPress={() => downloadFile(fname)} style={styles.button}>
-                    <Text>Download</Text>
+                    <Text style={styles.txt}>Download</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setmodal(true)} style={styles.button}>
-                    <Text>Rename File</Text>
+                    <Text style={styles.txt}>Rename File</Text>
                 </TouchableOpacity>
             </View>
             <Modal animationType='slide' visible={modal} transparent={true}>
@@ -88,10 +88,10 @@ const ViewFile = ({ navigation, route }) => {
                         <TextInput value={rename} onChangeText={(val) => setrename(val)} style={styles.modaltextinput} />
                         <View style={styles.modalbuttons}>
                             <TouchableOpacity onPress={HandleRename} style={styles.modalbutton}>
-                                <Text>Rename</Text>
+                                <Text style={styles.txt}>Rename</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setmodal(false)} style={styles.modalbutton}>
-                                <Text>Cancel</Text>
+                                <Text style={styles.txt}>Cancel</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -140,7 +140,8 @@ const styles = StyleSheet.create({
         height: 60,
         borderRadius: 10,
         borderWidth: 2,
-        borderColor: 'white'
+        borderColor: 'white',
+        color:"white"
     },
     button: {
         margin: 20,

@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Platform, FlatList, TouchableOpacity, Image, Pressable } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
+import Loading from '../components/loadingspinner';
 function ListData({ navigation, route }) {
-    const [files, setfiles] = useState([])
-    const [userid, setuserid] = useState("")
+    const [files, setfiles] = useState([]);
+    const [userid, setuserid] = useState("");
+    const [loading,setloading]=useState(false);
     useEffect(() => {
         setuserid(route.params.userid)
         navigation.setOptions({
             headerRight: () => {
                 return (
-                    <TouchableOpacity onPress={() => navigation.navigate('sign-in')}>
-                        <Text style={{ color: "white" }}>Logout</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('menu',{userid:userid})}>
+                        <Image source={require('../assets/menu-bar.png')} style={{height:40,width:40}}/>
                     </TouchableOpacity>
                 )
             },
@@ -30,11 +32,12 @@ function ListData({ navigation, route }) {
             },
             headerTintColor: "white",
         })
-        fetch(`https://cloudserver-2iuc.onrender.com/documents/${userid}`)
+        fetch(`http://192.168.1.8:5000/documents/${userid}`)
             .then(res => res.json())
             .then(data => setfiles(data))
     }, [files, navigation])
     function download(documentName) {
+        setloading(true);
         const { fs, config } = RNFetchBlob;
         const path = fs.dirs.DownloadDir;
         config({
@@ -45,13 +48,13 @@ function ListData({ navigation, route }) {
                 path: path + "/" + documentName,
                 description: 'file download',
             }
-        }).fetch('GET', `https://cloudserver-2iuc.onrender.com/${documentName}`, {
+        }).fetch('GET', `http://192.168.1.8:5000/${documentName}`, {
             Authorization: 'Bearer access-token...'
-        }).then(res => alert("Download successful"))
+        }).then(res => {setloading(false);alert("Download successful");})
     }
     function renderList(ItemData) {
         let fname;
-        const url = `https://cloudserver-2iuc.onrender.com/${ItemData.item.fileName}`
+        const url = `http://192.168.1.8:5000/${ItemData.item.fileName}`
         const myArray = ItemData.item.filetype.split("/");
         switch (myArray[0]) {
             case "image": fname = <Image source={{ uri: url }} style={styles.img} />; break;
@@ -62,7 +65,8 @@ function ListData({ navigation, route }) {
             navigation.navigate('viewscreen', { url: url, filename: ItemData.item.fileName, type: myArray[0], userid: userid })
         }
         function DeleteHandle(name) {
-            fetch("https://cloudserver-2iuc.onrender.com/Delete", {
+            setloading(true)
+            fetch("http://192.168.1.8:5000/Delete", {
                 method: "DELETE",
                 body: JSON.stringify({
                     name: name,
@@ -72,7 +76,7 @@ function ListData({ navigation, route }) {
                     "Content-Type": "application/json"
                 }
             }).then(res => res.json())
-                .then(data => { })
+            .then(data => { setloading(false)})
             const f = files.filter((item) => { item.name != name })
             setfiles(f);
         }
@@ -99,6 +103,7 @@ function ListData({ navigation, route }) {
                     <Image style={styles.icon} source={require("../assets/add-button.png")} />
                 </TouchableOpacity>
             </View>
+            <Loading isloading={loading}/>
         </View>
     )
 }

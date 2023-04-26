@@ -35,7 +35,7 @@ const ViewFile = ({ navigation, route }) => {
                 path: path + "/" + filename,
                 description: 'file download',
             }
-        }).fetch('GET', `https://cloudserver-2iuc.onrender.com/${filename}`, {
+        }).fetch('GET', `http://192.168.1.8:5000/${filename}`, {
             Authorization: 'Bearer access-token...'
         }).then(res => alert("Download successful"))
     }
@@ -46,7 +46,7 @@ const ViewFile = ({ navigation, route }) => {
         case "application": item = <Image source={require("../assets/file.png")} style={styles.img} />; break;
     }
     function HandleRename() {
-        fetch('https://cloudserver-2iuc.onrender.com/rename', {
+        fetch('http://192.168.1.8:5000/rename', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -76,10 +76,10 @@ const ViewFile = ({ navigation, route }) => {
             {type === "application" && <Text style={styles.txt}>Files can only be downloaded</Text>}
             <View style={styles.buttons}>
                 <TouchableOpacity onPress={() => downloadFile(fname)} style={styles.button}>
-                    <Text style={styles.txt}>Download</Text>
+                    <Text style={styles.buttontxt}>Download</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setmodal(true)} style={styles.button}>
-                    <Text style={styles.txt}>Rename File</Text>
+                    <Text style={styles.buttontxt}>Rename File</Text>
                 </TouchableOpacity>
             </View>
             <Modal animationType='slide' visible={modal} transparent={true}>
@@ -159,6 +159,10 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
 
+    },
+    buttontxt:{
+        alignItems: 'center',
+        color: "white"
     }
 })
 export default ViewFile;

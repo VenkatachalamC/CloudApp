@@ -26,7 +26,7 @@ export default LoginScreen = ({ navigation }) => {
     }, [])
     function signIn() {
         sha256(pass).then(hash => {
-            fetch("https://cloudserver-2iuc.onrender.com/SignIn", {
+            fetch("http://192.168.1.8:5000/SignIn", {
                 method: "POST",
                 headers: {
                     "content-Type": "application/json"

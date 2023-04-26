@@ -1,8 +1,10 @@
-import { Text, TouchableOpacity, View, StyleSheet, Image } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet, Image} from 'react-native';
 import DocumentPicker from 'react-native-document-picker'
 import { useLayoutEffect, useState } from 'react';
 import CardView from '../components/cardview';
+import Loading from '../components/loadingspinner';
 function Upload({ navigation, route }) {
+    const [loading,setloading]=useState(false)
     useLayoutEffect(() => {
         navigation.setOptions({
             headerStyle: {
@@ -18,7 +20,6 @@ function Upload({ navigation, route }) {
     )
 
     const [doc, setdoc] = useState(null)
-
     function FileuploadHandler() {
         DocumentPicker.pick().then(res => { setdoc(res); })
     }
@@ -30,19 +31,19 @@ function Upload({ navigation, route }) {
             uri: doc[0].uri,
             type: doc[0].type
         })
+        setloading(true)
         fd.append("userid", route.params.userid)
-        fetch("https://cloudserver-2iuc.onrender.com/upload", {
+        fetch("http://192.168.1.8:5000/upload", {
             method: "POST",
             body: fd,
             headers: {
                 "content-Type": "multipart/form-data"
-            }
-        }).then(alert("File uploaded successfully ☺️")).catch(err => alert("File not uploaded! 😔\n Try again"))
-        setdoc(null)
+        }
+        }).then(res=>res.json())
+        .then(data=>{setloading(false);alert(data.status)})
+        .catch(err =>{alert("File not uploaded! 😔\n Try again")})
+        setdoc(null);
     }
-
-
-
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={FileuploadHandler} style={styles.button}>
@@ -52,6 +53,7 @@ function Upload({ navigation, route }) {
             {doc && <TouchableOpacity onPress={uploadHandler}>
                 <Image source={require("../assets/upload.png")} style={styles.Image} />
             </TouchableOpacity>}
+            <Loading isloading={loading}/>
         </View>
     )
 }

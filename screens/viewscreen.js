@@ -2,10 +2,12 @@ import { View, Image, Text, StyleSheet, Pressable, TextInput, Button, Modal, Tou
 import Video from 'react-native-video';
 import { useLayoutEffect, useState } from 'react';
 import RNFetchBlob from 'rn-fetch-blob';
+import Loading from '../components/loadingspinner';
 const ViewFile = ({ navigation, route }) => {
     const [modal, setmodal] = useState(false);
     const [rename, setrename] = useState(route.params.filename);
-    const [fname, setfname] = useState(route.params.filename)
+    const [fname, setfname] = useState(route.params.filename);
+    const [loading,setloading]=useState(false);
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -27,6 +29,7 @@ const ViewFile = ({ navigation, route }) => {
     function downloadFile(filename) {
         const { fs, config } = RNFetchBlob;
         const path = fs.dirs.DownloadDir;
+        setloading(true);
         config({
             fileCache: true,
             addAndroidDownloads: {
@@ -35,9 +38,9 @@ const ViewFile = ({ navigation, route }) => {
                 path: path + "/" + filename,
                 description: 'file download',
             }
-        }).fetch('GET', `http://192.168.1.8:5000/${filename}`, {
+        }).fetch('GET', `https://cloudserver-2iuc.onrender.com/${filename}`, {
             Authorization: 'Bearer access-token...'
-        }).then(res => alert("Download successful"))
+        }).then(res =>{setloading(false);alert("Download successful")})
     }
     switch (type) {
         case "image": item = <Image source={{ uri: url }} style={styles.img} />; break;
@@ -46,7 +49,8 @@ const ViewFile = ({ navigation, route }) => {
         case "application": item = <Image source={require("../assets/file.png")} style={styles.img} />; break;
     }
     function HandleRename() {
-        fetch('http://192.168.1.8:5000/rename', {
+        setloading(true);
+        fetch('https://cloudserver-2iuc.onrender.com/rename', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -58,6 +62,7 @@ const ViewFile = ({ navigation, route }) => {
             })
 
         }).then(res => res.json()).then(data => {
+            setloading(false);
             if (data.status === 'ok') {
                 setfname(rename);
                 ToastAndroid.show('Rename successfull', ToastAndroid.LONG);
@@ -97,6 +102,7 @@ const ViewFile = ({ navigation, route }) => {
                     </View>
                 </View>
             </Modal>
+            <Loading isloading={loading}/>
         </View>
     )
 }

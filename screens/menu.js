@@ -17,10 +17,10 @@ const Menu = ({ navigation, route }) => {
             contentStyle: {
                 backgroundColor: "black"
             },
-            headerLeft:()=>{
-                return(
-                    <TouchableOpacity onPress={()=>navigation.goBack()}>
-                        <Image source={require('../assets/home.png')} style={{height:40,width:40}}/>
+            headerLeft: () => {
+                return (
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Image source={require('../assets/home.png')} style={{ height: 30, width: 30 }} />
                     </TouchableOpacity>
                 )
             }
@@ -28,7 +28,7 @@ const Menu = ({ navigation, route }) => {
     })
 
     function DeactivateHandle() {
-        fetch("http://192.168.1.8:5000/deactivate", {
+        fetch("https://cloudserver-2iuc.onrender.com/deactivate", {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -73,9 +73,9 @@ const Menu = ({ navigation, route }) => {
                             <TouchableOpacity onPress={DeactivateHandle} style={styles.buttonDeactivate} >
                                 <Text style={styles.txt}>Deactivate</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity  onPress={() => setmodal(false)} style={styles.buttonCancel}>
+                            <TouchableOpacity onPress={() => setmodal(false)} style={styles.buttonCancel}>
                                 <Text style={styles.txt}>Cancel</Text>
-                                </TouchableOpacity>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     samerow: {
-        margin:20,
+        margin: 20,
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         flex: 1,
-        opacity:0.8,
-        backgroundColor:"black"
+        opacity: 0.8,
+        backgroundColor: "black"
     },
     modalsub: {
         alignItems: 'center',
@@ -109,49 +109,49 @@ const styles = StyleSheet.create({
         height: 200,
         width: 300
     },
-    buttonrow:{
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-evenly',
-        width:300,
+    buttonrow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        width: 300,
     },
-    buttonDeactivate:{
-        backgroundColor:"green",
-        height:40,
-        padding:10,
-        borderRadius:10,
-        alignContent:'center'
-    },
-    buttonCancel:{
-        backgroundColor:"red",
-        height:40,
-        padding:10,
-        borderRadius:10,
-        alignContent:'center'
-    },
-    txt:{
-        color:"white"
-    },
-    ModalTopic:{
-        color:"red",
-        fontWeight:"bold",
-        fontSize:20,
-        margin:10
-    },
-    ModalContent:{
-        margin:10,
-        color:"white",
-        fontSize:15,
-        alignItems:"center",
-        justifyContent:"center"
-    },
-    image:{
+    buttonDeactivate: {
+        backgroundColor: "green",
         height: 40,
-         width: 40, 
-         margin: 20, 
+        padding: 10,
+        borderRadius: 10,
+        alignContent: 'center'
     },
-    option:{
-        color:"white"
+    buttonCancel: {
+        backgroundColor: "red",
+        height: 40,
+        padding: 10,
+        borderRadius: 10,
+        alignContent: 'center'
+    },
+    txt: {
+        color: "white"
+    },
+    ModalTopic: {
+        color: "red",
+        fontWeight: "bold",
+        fontSize: 20,
+        margin: 10
+    },
+    ModalContent: {
+        margin: 10,
+        color: "white",
+        fontSize: 15,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    image: {
+        height: 40,
+        width: 40,
+        margin: 20,
+    },
+    option: {
+        color: "white"
     }
 })
 export default Menu;

@@ -12,7 +12,7 @@ function ListData({ navigation, route }) {
             headerRight: () => {
                 return (
                     <TouchableOpacity onPress={() => navigation.navigate('menu',{userid:userid})}>
-                        <Image source={require('../assets/menu-bar.png')} style={{height:40,width:40}}/>
+                        <Image source={require('../assets/menu-bar.png')} style={{height:30,width:30}}/>
                     </TouchableOpacity>
                 )
             },
@@ -32,7 +32,7 @@ function ListData({ navigation, route }) {
             },
             headerTintColor: "white",
         })
-        fetch(`http://192.168.1.8:5000/documents/${userid}`)
+        fetch(`https://cloudserver-2iuc.onrender.com/documents/${userid}`)
             .then(res => res.json())
             .then(data => setfiles(data))
     }, [files, navigation])
@@ -48,13 +48,13 @@ function ListData({ navigation, route }) {
                 path: path + "/" + documentName,
                 description: 'file download',
             }
-        }).fetch('GET', `http://192.168.1.8:5000/${documentName}`, {
+        }).fetch('GET', `https://cloudserver-2iuc.onrender.com/${documentName}`, {
             Authorization: 'Bearer access-token...'
         }).then(res => {setloading(false);alert("Download successful");})
     }
     function renderList(ItemData) {
         let fname;
-        const url = `http://192.168.1.8:5000/${ItemData.item.fileName}`
+        const url = `https://cloudserver-2iuc.onrender.com/${ItemData.item.fileName}`
         const myArray = ItemData.item.filetype.split("/");
         switch (myArray[0]) {
             case "image": fname = <Image source={{ uri: url }} style={styles.img} />; break;
@@ -66,7 +66,7 @@ function ListData({ navigation, route }) {
         }
         function DeleteHandle(name) {
             setloading(true)
-            fetch("http://192.168.1.8:5000/Delete", {
+            fetch("https://cloudserver-2iuc.onrender.com/Delete", {
                 method: "DELETE",
                 body: JSON.stringify({
                     name: name,

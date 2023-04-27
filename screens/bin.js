@@ -1,38 +1,38 @@
-import {Text,View,FlatList,Image,StyleSheet,Pressable,ToastAndroid} from 'react-native';
-import {useState,useLayoutEffect} from 'react';
+import { Text, View, FlatList, Image, StyleSheet, Pressable, ToastAndroid } from 'react-native';
+import { useState, useLayoutEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
 import Loading from '../components/loadingspinner';
-const Bin=({navigation,route})=>{
-    const [binfiles,setbinfiles]=useState([]);
-    const [userid,setuserid]=useState("");
-    const [loading,setloading]=useState(false);
-    useLayoutEffect(()=>{
+const Bin = ({ navigation, route }) => {
+    const [binfiles, setbinfiles] = useState([]);
+    const [userid, setuserid] = useState("");
+    const [loading, setloading] = useState(false);
+    useLayoutEffect(() => {
         setuserid(route.params.userid);
         navigation.setOptions({
-            headerStyle:{
-                backgroundColor:"black"
+            headerStyle: {
+                backgroundColor: "black"
             },
-            contentStyle:{
-                backgroundColor:"black"
+            contentStyle: {
+                backgroundColor: "black"
             },
-            headerTintColor:"white",
-            title:"Bin",
-            headerTitleAlign:"center",
-            headerLeft:()=>{
+            headerTintColor: "white",
+            title: "Bin",
+            headerTitleAlign: "center",
+            headerLeft: () => {
                 return (
-                    <TouchableOpacity onPress={()=>navigation.goBack()}>
-                        <Image source={require('../assets/menu-bar.png')} style={{height:40,width:40}} />
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Image source={require('../assets/menu-bar.png')} style={{ height: 30, width: 30 }} />
                     </TouchableOpacity>
                 )
             }
         })
-        fetch(`http://192.168.1.8:5000/getbin/${userid}`)
-        .then(res=>res.json())
-        .then(data=>{setbinfiles(data);});
-    },[userid,binfiles])
-    function DisplayData(ItemData){
+        fetch(`https://cloudserver-2iuc.onrender.com/getbin/${userid}`)
+            .then(res => res.json())
+            .then(data => { setbinfiles(data); });
+    }, [userid, binfiles])
+    function DisplayData(ItemData) {
         let fname;
-        const url = `http://192.168.1.8:5000/${ItemData.item.fileName}`
+        const url = `https://cloudserver-2iuc.onrender.com/${ItemData.item.fileName}`
         const myArray = ItemData.item.filetype.split("/");
         switch (myArray[0]) {
             case "image": fname = <Image source={{ uri: url }} style={styles.img} />; break;
@@ -41,7 +41,7 @@ const Bin=({navigation,route})=>{
         }
         function DeleteHandle(name) {
             setloading(true);
-            fetch("http://192.168.1.8:5000/permanentdelete", {
+            fetch("https://cloudserver-2iuc.onrender.com/permanentdelete", {
                 method: "DELETE",
                 body: JSON.stringify({
                     name: name,
@@ -51,33 +51,33 @@ const Bin=({navigation,route})=>{
                     "Content-Type": "application/json"
                 }
             }).then(res => res.json())
-                .then(data => {setloading(false) })
+                .then(data => { setloading(false) })
             const f = binfiles.filter((item) => { item.name != name })
             setbinfiles(f);
         }
-        function restore(name){
+        function restore(name) {
             setloading(true)
-            fetch('http://192.168.1.8:5000/restore',{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
+            fetch('https://cloudserver-2iuc.onrender.com/restore', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
                 },
-                body:JSON.stringify({
-                    fname:name,
-                    uid:userid
+                body: JSON.stringify({
+                    fname: name,
+                    uid: userid
                 })
-            }).then(res=>res.json())
-            .then(data=>{
+            }).then(res => res.json())
+                .then(data => {
                     setloading(false);
                     ToastAndroid.show('File Restored Successfully', ToastAndroid.LONG);
-            }).catch(err=>{
-                setloading(false)
-                ToastAndroid.show('file restoration failed',ToastAndroid.LONG)
-            })
+                }).catch(err => {
+                    setloading(false)
+                    ToastAndroid.show('file restoration failed', ToastAndroid.LONG)
+                })
         }
         return (
             <View style={styles.list}>
-                    {fname}
+                {fname}
                 <Text style={styles.txt}>{ItemData.item.fileName}</Text>
                 <Pressable onPress={() => restore(ItemData.item.fileName)}>
                     <Image source={require('../assets/restore.png')} style={{ height: 30, width: 30, margin: 20 }} />
@@ -88,10 +88,10 @@ const Bin=({navigation,route})=>{
             </View>
         )
     }
-    return(
+    return (
         <View>
-            <FlatList data={binfiles} keyExtractor={item=>item._id} renderItem={DisplayData}/>
-            <Loading isloading={loading}/>
+            <FlatList data={binfiles} keyExtractor={item => item._id} renderItem={DisplayData} />
+            <Loading isloading={loading} />
         </View>
     )
 }

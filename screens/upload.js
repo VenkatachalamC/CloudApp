@@ -33,7 +33,7 @@ function Upload({ navigation, route }) {
         })
         setloading(true)
         fd.append("userid", route.params.userid)
-        fetch("http://192.168.1.8:5000/upload", {
+        fetch("https://cloudserver-2iuc.onrender.com/upload", {
             method: "POST",
             body: fd,
             headers: {
@@ -41,7 +41,7 @@ function Upload({ navigation, route }) {
         }
         }).then(res=>res.json())
         .then(data=>{setloading(false);alert(data.status)})
-        .catch(err =>{alert("File not uploaded! 😔\n Try again")})
+        .catch(err =>{setloading(false);alert("File not uploaded! 😔\n Try again")})
         setdoc(null);
     }
     return (
